@@ -1,12 +1,11 @@
-import { StyleSheet, View,Button, Alert, Dimensions } from 'react-native';
-import {BarChart} from "react-native-chart-kit";
-	import { jsPDF } from 'jspdf';
-	import * as FileSystem from 'expo-file-system'; // Manejo de archivos
-	import * as Sharing from 'expo-sharing'; // Para compartir archivos
+import React from 'react';
+import { View, Button, Alert, StyleSheet, Dimensions } from 'react-native';
+import { jsPDF } from 'jspdf';
+import * as FileSystem from 'expo-file-system'; // Manejo de archivos
+import * as Sharing from 'expo-sharing'; // Para compartir archivos
+import { BarChart } from "react-native-chart-kit";
 
-export default function GraficoSalarios({dataSalarios}) {
-
-  let screenWidth = Dimensions.get("window").width
+export default function GraficoSalarios({ dataSalarios }) {
 
   const generarPDF = async () => {
     try {
@@ -21,7 +20,6 @@ export default function GraficoSalarios({dataSalarios}) {
         const salario = dataSalarios.datasets[0].data[index];
         doc.text(`${label}: C$${salario}`, 10, 20 + index * 10); // Formato de los datos
       });
-
 
       // Generar el PDF como base64
       const pdfBase64 = doc.output('datauristring').split(',')[1];
@@ -42,12 +40,14 @@ export default function GraficoSalarios({dataSalarios}) {
       Alert.alert('Error', 'No se pudo generar o compartir el PDF.');
     }
   };
+  
+  let screenWidth = Dimensions.get("window").width;
 
   return (
     <View style={styles.container}>
       <BarChart
         data={dataSalarios}
-        width={screenWidth-(screenWidth*0.1)}
+        width={screenWidth - (screenWidth * 0.1)}
         height={300}
         yAxisLabel="C$"
         chartConfig={{
@@ -66,11 +66,12 @@ export default function GraficoSalarios({dataSalarios}) {
         withHorizontalLabels={true}
         showValuesOnTopOfBars={true}
       />
-
-      {/* Botón para generar y compartir PDF */}
-	<Button title="Generar y Compartir PDF" onPress={generarPDF} />
+      
+      <View style={styles.button}>
+        {/* Botón para generar y compartir PDF */}
+        <Button  title="Generar y Compartir PDF" onPress={generarPDF} />
+      </View>
     </View>
-
   );
 }
 
@@ -78,5 +79,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     margin: 10
+  },
+  button: {
+    marginTop: 10
   },
 });
