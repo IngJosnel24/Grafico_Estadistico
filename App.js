@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import GraficoSalarios from './src/components/GraficoSalario';
 import GraficoGeneros from './src/components/GraficoGenero';
 import Formulario from './src/components/Formulario';
 import GraficoReporteEnfermedades from './src/components/GraficoReporteEnfermedades';
 import GraficoBezier from './src/components/GraficoBazier';
-import { collection, getDocs, query } from 'firebase/firestore';
+import GraficoProgreso from './src/components/GraficoProgreso';
+import {collection, getDocs, query } from 'firebase/firestore';
 
 //Importación de conexión a firebase
 import db from './db/firebaseconfig';
 
-
 export default function Graficos() {
 
+  const [dataProgreso, setDataProgreso] = useState({
+    labels: [''],
+    data: [0]
+  });
+  
   const [bandera, setBandera] = useState(false); // Variable bandera
   const [dataSalarios, setDataSalarios] = useState({
     labels: [''],
@@ -116,6 +121,15 @@ export default function Graficos() {
           }
         ];
 
+        totalPersonas = masculino + femenino;
+
+        const progresos = [masculino/totalPersonas, femenino/totalPersonas]
+
+        setDataProgreso({
+          labels: ['Hombres', 'Mujeres'],
+          data: progresos
+        });
+
         setDataGeneros(totalData);
         console.log(totalData);
       } catch (error) {
@@ -133,6 +147,10 @@ export default function Graficos() {
         <GraficoSalarios dataSalarios={dataSalarios}/>
         <GraficoBezier dataSalarios={dataSalarios}/>
         <GraficoGeneros dataGeneros={dataGeneros}/>
+        <GraficoProgreso 
+          dataProgreso={dataProgreso}
+          colors={['rgba(131, 167, 234, 0.5)', 'rgba(255, 105, 180, 0.5)']}   
+        />
         <GraficoReporteEnfermedades dataReporteEnfermedades={dataReporteEnfermedades}/>
       </ScrollView>
 
